@@ -103,6 +103,20 @@ data "hcp_packer_image" "hashicat" {
   region         = "eu-west-2"
 }
 
+
+resource "tls_private_key" "hashicat" {
+  algorithm = "RSA"
+}
+
+locals {
+  private_key_filename = "${var.prefix}-ssh-key.pem"
+}
+
+resource "aws_key_pair" "hashicat" {
+  key_name   = local.private_key_filename
+  public_key = tls_private_key.hashicat.public_key_openssh
+}
+
 resource "aws_instance" "hashicat" {
   ami           = data.hcp_packer_image.hashicat.cloud_image_id
   instance_type               = var.instance_type
@@ -118,16 +132,3 @@ resource "aws_instance" "hashicat" {
   }
 }
 
-
-resource "tls_private_key" "hashicat" {
-  algorithm = "RSA"
-}
-
-locals {
-  private_key_filename = "${var.prefix}-ssh-key.pem"
-}
-
-resource "aws_key_pair" "hashicat" {
-  key_name   = local.private_key_filename
-  public_key = tls_private_key.hashicat.public_key_openssh
-}
