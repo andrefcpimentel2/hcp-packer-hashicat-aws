@@ -35,6 +35,6 @@ variable "hcp_bucket_hashicat" {
   description = "HCP Packer bucket name for base golden image"
 }
 variable "hcp_channel" {
-  default     = "production"
+  default     = "latest"
   description = "HCP Packer channel name"
 }
